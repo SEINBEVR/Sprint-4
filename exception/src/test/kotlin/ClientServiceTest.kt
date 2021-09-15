@@ -18,11 +18,49 @@ class ClientServiceTest {
     }
 
     @Test
-    fun `fail save client - validation error`() {
-        val client = getClientFromJson("/fail/user_with_bad_phone.json")
-        assertThrows<ValidationException>("Ожидаемая ошибка") {
+    fun `fail save client - phone validation error`() {
+        val client = getClientFromJson("/fail/user_data_with_bad_phone_length.json")
+        val exception = assertThrows<ValidationException>("Ожидаемая ошибка") {
             clientService.saveClient(client)
         }
+        assertEquals(exception.errorCode[0], ErrorCode.INVALID_LENGTH)
+    }
+
+    @Test
+    fun `fail save client - email validation error`() {
+        val client = getClientFromJson("/fail/user_data_with_bad_email.json")
+        val exception = assertThrows<ValidationException>("Ожидаемая ошибка") {
+            clientService.saveClient(client)
+        }
+        assertEquals(exception.errorCode[0], ErrorCode.INVALID_CHARACTER)
+    }
+
+    @Test
+    fun `fail save client - name validation error`() {
+        val client = getClientFromJson("/fail/user_data_with_bad_name.json")
+        val exception = assertThrows<ValidationException>("Ожидаемая ошибка") {
+            clientService.saveClient(client)
+        }
+        assertEquals(exception.errorCode[0], ErrorCode.INVALID_LENGTH)
+        assertEquals(exception.errorCode[1], ErrorCode.INVALID_CHARACTER)
+    }
+
+    @Test
+    fun `fail save client - snils number validation error`() {
+        val client = getClientFromJson("/fail/user_data_with_bad_snils_number.json")
+        val exception = assertThrows<ValidationException>("Ожидаемая ошибка") {
+            clientService.saveClient(client)
+        }
+        assertEquals(exception.errorCode[0], ErrorCode.INVALID_SNILS_NUMBER)
+    }
+
+    @Test
+    fun `fail save client - snils length validation error`() {
+        val client = getClientFromJson("/fail/user_data_with_bad_snils_length.json")
+        val exception = assertThrows<ValidationException>("Ожидаемая ошибка") {
+            clientService.saveClient(client)
+        }
+        assertEquals(exception.errorCode[0], ErrorCode.INVALID_LENGTH)
     }
 
     @Test
@@ -31,7 +69,11 @@ class ClientServiceTest {
         val exception = assertFailsWith<ValidationException>("Ожидаемая ошибка") {
             clientService.saveClient(client)
         }
-        assertEquals(exception.errorCode[0], ErrorCode.INVALID_CHARACTER)
+        assertEquals(exception.errorCode[0], ErrorCode.INVALID_LENGTH)
+        assertEquals(exception.errorCode[1], ErrorCode.CANNOT_BE_EMPTY)
+        assertEquals(exception.errorCode[2], ErrorCode.INVALID_LENGTH)
+        assertEquals(exception.errorCode[3], ErrorCode.INVALID_CHARACTER)
+        assertEquals(exception.errorCode[4], ErrorCode.INVALID_SNILS_NUMBER)
     }
 
     private fun getClientFromJson(fileName: String): Client = this::class.java.getResource(fileName)
