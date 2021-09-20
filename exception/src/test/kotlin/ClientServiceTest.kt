@@ -36,6 +36,15 @@ class ClientServiceTest {
     }
 
     @Test
+    fun `fail save client - empty email validation error`() {
+        val client = getClientFromJson("/fail/user_data_with_empty_email.json")
+        val exception = assertThrows<ValidationException>("Ожидаемая ошибка") {
+            clientService.saveClient(client)
+        }
+        assertEquals(exception.errorCode[0], ErrorCode.CANNOT_BE_EMPTY)
+    }
+
+    @Test
     fun `fail save client - name validation error`() {
         val client = getClientFromJson("/fail/user_data_with_bad_name.json")
         val exception = assertThrows<ValidationException>("Ожидаемая ошибка") {

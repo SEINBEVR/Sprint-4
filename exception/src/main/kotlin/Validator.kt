@@ -18,12 +18,14 @@ class PhoneValidator : Validator<String>() {
 class NameAndSurnameValidator : Validator<String> () {
     override fun validate(value: String?): List<ErrorCode> {
         val pattern = "[A-Я][а-я]+".toRegex()
-        value?.let {
+        value.let {
+            if(it.isNullOrEmpty())
+                return listOf(ErrorCode.CANNOT_BE_EMPTY)
             if(it.length > 16)
                 return listOf(ErrorCode.INVALID_LENGTH)
             if(!it.matches(pattern))
                 return listOf(ErrorCode.INVALID_CHARACTER)
-        } ?: return listOf(ErrorCode.CANNOT_BE_EMPTY)
+        }
         return emptyList()
     }
 }
@@ -31,12 +33,14 @@ class NameAndSurnameValidator : Validator<String> () {
 class EmailValidator : Validator<String> () {
     override fun validate(value: String?): List<ErrorCode> {
         val pattern = "[\\w_\\.]+@\\w+(\\.[A-Za-z]{2,3})$".toRegex()
-        value?.let {
+        value.let {
+            if(it.isNullOrEmpty())
+                return listOf(ErrorCode.CANNOT_BE_EMPTY)
             if(it.length > 32)
                 return listOf(ErrorCode.INVALID_LENGTH)
             if(!it.matches(pattern))
                 return listOf(ErrorCode.INVALID_CHARACTER)
-        } ?: return listOf(ErrorCode.CANNOT_BE_EMPTY)
+        }
         return emptyList()
     }
 }
